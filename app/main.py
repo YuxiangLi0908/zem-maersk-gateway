@@ -43,6 +43,10 @@ async def root():
     """Health check endpoint"""
     return {"message": "Maersk Gateway API is running", "status": "healthy"}
 
+@app.get("/heartbeat")
+async def heartbeat():
+    """Health check endpoint"""
+    return {"message": "heartbeat", "status": "healthy"}
 
 @app.post("/api/v1/ratings")
 async def get_rating(request: RatingRequest):
