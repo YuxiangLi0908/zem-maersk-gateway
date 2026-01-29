@@ -17,7 +17,7 @@ async def get_rating(request: RatingRequest):
             shipper={"zipcode": request.origin_zip},
             consignee={"zipcode": request.dest_zip},
             lineItems=request.lineItems,
-            locationID=app_config.LOCATION_ID,
+            locationID=app_config.ADDRESS_ID,
             tariffHeaderID=app_config.TARIFF_HEADER_ID,
             shipDate=request.shipDate,
         ).model_dump()
