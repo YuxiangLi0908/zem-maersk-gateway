@@ -20,6 +20,7 @@ app.include_router(api_router)
 PILOT_API_URL = "https://wsi.pilotdelivers.com/pilotapi/test/v1/Ratings"
 API_KEY = "D82DFF02-5FA1-4D03-96E6-8B775767C35E"
 
+
 @app.post("/api/v1/ratings")
 async def get_rating(request: RatingRequest):
     """

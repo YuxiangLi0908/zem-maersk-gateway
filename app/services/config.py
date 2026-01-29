@@ -13,4 +13,5 @@ class AppConfig:
 
         self.RATE_API_URL = "https://wsi.pilotdelivers.com/pilotapi/test/v1/Ratings"
 
+
 app_config = AppConfig()

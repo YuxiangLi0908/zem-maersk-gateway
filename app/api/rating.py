@@ -1,11 +1,10 @@
+import requests
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.services.utils import verify_api_key
-from app.services.config import app_config
-from app.data_models.request_model import RatingRequest
 from app.data_models.rating.rating import Rating
-
-import requests
+from app.data_models.request_model import RatingRequest
+from app.services.config import app_config
+from app.services.utils import verify_api_key
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 
