@@ -31,6 +31,6 @@ jobs:
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp update \
-            --name zemmaerskgateway \
+            --name zem-maersk-gateway \
             --resource-group maersk-api \
             --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_TAG }}
