@@ -8,7 +8,9 @@ from app.data_models.request_model import RatingRequest
 from app.services.config import app_config
 from app.services.utils import verify_api_key
 
+
 router = APIRouter(dependencies=[Depends(verify_api_key)])
+
 @router.post("/rating", name="rating")
 async def get_rating(request: RatingRequest):
     headers = {"api-key": app_config.MAERSK_API_KEY, "Content-Type": "application/json"}

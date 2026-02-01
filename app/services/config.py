@@ -10,8 +10,22 @@ class AppConfig:
         self.MAERSK_API_KEY = os.getenv("MAERSK_API_KEY")
         self.CLIENT_ID = os.getenv("CLIENT_ID")
         self.CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+        self.TARIFF_CODE = "ZEM"
 
         self.RATE_API_URL = "https://wsi.pilotdelivers.com/pilotapi/test/v1/Ratings"
+
+        self.SHIPMENT_API_URL = "https://api-stage.maersk.com/mgf/public-gateway/shipments"
+
+        self.THIRD_PARTY = {
+            "address": {
+                "name": "ZEM LOGISTICS INC",
+                "address1": "27 ENGELHARD AVE",
+                "city": "AVENEL",
+                "regionCode": "NJ",
+                "postalCode": "07001",
+                "countryCode": "US",
+            }
+        }
 
 
 app_config = AppConfig()
