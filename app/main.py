@@ -5,6 +5,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from app.api.router import api_router
 
 app = FastAPI(title="Maersk Gateway API", version="1.0.0")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,5 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
+
 app.add_middleware(GZipMiddleware)
+
 app.include_router(api_router)

@@ -29,16 +29,13 @@ async def get_rating(request: RatingRequest):
         )
         resp.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        # Return same error code and message from the API
         raise HTTPException(status_code=resp.status_code, detail=resp.text or str(e))
     except requests.exceptions.RequestException as e:
-        # Network or connection errors
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Failed to connect to rating service: {str(e)}",
         )
 
-    # Parse the response
     try:
         response_data = resp.json()
     except ValueError:
@@ -56,4 +53,28 @@ async def get_rating(request: RatingRequest):
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=error_message
         )
 
-    return response_data
+    # Filter quotes for services BR and 72
+    filtered_quotes = []
+    for quote in response_data["dsQuote"]["Quote"]:
+        if quote.get("Service") in ["BR", "72"]:
+            quote_id = quote.get("Quote_Id")
+
+            # Find corresponding breakdowns for this quote
+            breakdowns = [
+                breakdown
+                for breakdown in response_data["dsQuote"]["Breakdown"]
+                if breakdown.get("Quote_Id") == quote_id
+            ]
+
+            # Add breakdowns to the quote
+            quote["Breakdowns"] = breakdowns
+            filtered_quotes.append(quote)
+
+    result = {
+        "rating": response_data["dsQuote"]["Rating"][0],
+        "shipper": response_data["dsQuote"]["Shipper"][0],
+        "consignee": response_data["dsQuote"]["Consignee"][0],
+        "lineitems": response_data["dsQuote"]["LineItems"],
+        "quotes": filtered_quotes,
+    }
+    return result
