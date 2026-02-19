@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from datetime import datetime
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 from typing import List, Optional
 
 from pydantic import BaseModel, field_serializer, field_validator
@@ -107,18 +107,18 @@ class ShipmentLineItem(BaseModel):
 class ShipmentCreateRequest(BaseModel):
     tariffCode: Optional[str] = None
     locationId: Optional[int] = None
-    serviceCode: str
     controlStation: Optional[str] = None
+    payType: Optional[str] = None
+    specialInstructions: Optional[str] = None
+    serviceCode: str
     shipDate: str
     shipReadyTime: str
     shipCloseTime: str
-    payType: str
-    specialInstructions: Optional[str] = None
 
     monetary: Optional[ShipmentMonetary] = None
+    thirdParty: Optional[ThirdParty] = None
     shipper: ShipmentParty
     consignee: ShipmentParty
-    thirdParty: Optional[ThirdParty] = None
 
     lineItems: List[ShipmentLineItem]
 
@@ -139,3 +139,14 @@ class ShipmentCreateRequest(BaseModel):
         except ValueError as e:
             raise ValueError("time must be in HH:MM:SS format") from e
         return value
+
+
+class LabelRequest(BaseModel):
+    shawb: str
+    eLabelType: str
+    szip: str
+
+
+class BOLRequest(BaseModel):
+    shawb: str
+    szip: str

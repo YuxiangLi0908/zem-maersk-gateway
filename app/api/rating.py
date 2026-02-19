@@ -8,22 +8,25 @@ from app.data_models.request_model import RatingRequest
 from app.services.config import app_config
 from app.services.utils import verify_api_key
 
-
 router = APIRouter(dependencies=[Depends(verify_api_key)])
+
 
 @router.post("/rating", name="rating")
 async def get_rating(request: RatingRequest):
     headers = {"api-key": app_config.MAERSK_API_KEY, "Content-Type": "application/json"}
-    
+
     # Validate each line item
     try:
-        validated_line_items = [LineItem(**item) if isinstance(item, dict) else item for item in request.lineItems]
+        validated_line_items = [
+            LineItem(**item) if isinstance(item, dict) else item
+            for item in request.lineItems
+        ]
     except ValidationError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid line item data: {e.errors()}"
+            detail=f"Invalid line item data: {e.errors()}",
         )
-    
+
     data = {
         "rating": Rating(
             shipper={"zipcode": request.origin_zip},

@@ -11,11 +11,17 @@ class AppConfig:
         self.CLIENT_ID = os.getenv("CLIENT_ID")
         self.CLIENT_SECRET = os.getenv("CLIENT_SECRET")
         self.TARIFF_CODE = "ZEM"
+        self.CONTROL_STATION = "GOP"
+        self.PAY_TYPE = "ThirdParty"
 
         self.RATE_API_URL = "https://wsi.pilotdelivers.com/pilotapi/test/v1/Ratings"
-
-        self.SHIPMENT_API_URL = "https://api-stage.maersk.com/mgf/public-gateway/shipments"
-
+        self.SHIPMENT_API_URL = (
+            "https://api-stage.maersk.com/mgf/public-gateway/shipments"
+        )
+        self.SHIPMENT_VOID_API_URL = (
+            f"https://wsi.pilotdelivers.com/pilotapi/test/v1/Shipments/Void"
+        )
+        self.LABEL_API_URL = "https://pilotws.pilotdelivers.com/copilotforms_dev/wsforms.asmx"
         self.THIRD_PARTY = {
             "address": {
                 "name": "ZEM LOGISTICS INC",
