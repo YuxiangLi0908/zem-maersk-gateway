@@ -7,6 +7,7 @@ Base = declarative_base()
 
 class MaerskRatingLog(Base):
     __tablename__ = "maersk_rating_log"
+    __table_args__ = {"schema": "maersk_copilot"}
 
     id = Column(Integer, primary_key=True, index=True)
     endpoint = Column(String, nullable=False)
