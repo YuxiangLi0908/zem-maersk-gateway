@@ -1,15 +1,20 @@
 import requests
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
+from app.data_models.db.maersk_logs import MaerskShipmentLog
 from app.data_models.shipment.request import ShipmentCreateRequest
 from app.services.config import app_config
+from app.services.db_session import db_session
 from app.services.utils import verify_api_key
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 
 @router.post("/shipment", name="shipment")
-async def create_shipment(request: ShipmentCreateRequest):
+async def create_shipment(
+    request: ShipmentCreateRequest, db: Session = Depends(db_session.get_db)
+):
     if not app_config.CLIENT_ID:
         raise RuntimeError("MAERSK_CONSUMER_KEY/CLIENT_ID is not set")
 
@@ -50,6 +55,15 @@ async def create_shipment(request: ShipmentCreateRequest):
 
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
+    # Log request and response
+    log_entry = MaerskShipmentLog(
+        endpoint="/shipment",
+        request_data=payload,
+        response_data=resp.json() if resp.status_code < 400 else detail,
+    )
+    db.add(log_entry)
+    db.commit()
+
     try:
         return resp.json()
     except ValueError:
@@ -60,7 +74,9 @@ async def create_shipment(request: ShipmentCreateRequest):
 
 
 @router.post("/shipment/void", name="shipment_void")
-async def shipment_void(pro_number: str, control_station: str):
+async def shipment_void(
+    pro_number: str, control_station: str, db: Session = Depends(db_session.get_db)
+):
     if not app_config.MAERSK_API_KEY:
         raise RuntimeError("MAERSK_API_KEY is not set")
 
@@ -98,6 +114,15 @@ async def shipment_void(pro_number: str, control_station: str):
             detail = resp.text
 
         raise HTTPException(status_code=resp.status_code, detail=detail)
+
+    # Log request and response for shipment_void
+    log_entry = MaerskShipmentLog(
+        endpoint="/shipment/void",
+        request_data=payload,
+        response_data=resp.json() if resp.status_code < 400 else detail,
+    )
+    db.add(log_entry)
+    db.commit()
 
     try:
         response_data = resp.json()

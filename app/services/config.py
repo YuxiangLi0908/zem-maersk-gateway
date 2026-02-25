@@ -21,7 +21,9 @@ class AppConfig:
         self.SHIPMENT_VOID_API_URL = (
             f"https://wsi.pilotdelivers.com/pilotapi/test/v1/Shipments/Void"
         )
-        self.LABEL_API_URL = "https://pilotws.pilotdelivers.com/copilotforms_dev/wsforms.asmx"
+        self.LABEL_API_URL = (
+            "https://pilotws.pilotdelivers.com/copilotforms_dev/wsforms.asmx"
+        )
         self.THIRD_PARTY = {
             "address": {
                 "name": "ZEM LOGISTICS INC",

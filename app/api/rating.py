@@ -3,13 +3,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
+from app.data_models.db.maersk_logs import MaerskRatingLog
 from app.data_models.rating.line_item import LineItem
 from app.data_models.rating.rating import Rating
 from app.data_models.request_model import RatingRequest
 from app.services.config import app_config
-from app.services.utils import verify_api_key
 from app.services.db_session import db_session
-from app.data_models.db.rating_log import MaerskRatingLog
+from app.services.utils import verify_api_key
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 

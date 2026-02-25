@@ -1,14 +1,18 @@
 import requests
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.services.utils import verify_api_key
-from app.data_models.shipment.request import LabelRequest, BOLRequest
+from sqlalchemy.orm import Session
+
+from app.data_models.db.maersk_logs import MaerskLabelLog
+from app.data_models.shipment.request import BOLRequest, LabelRequest
 from app.services.config import app_config
+from app.services.db_session import db_session
+from app.services.utils import verify_api_key
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 
 @router.post("/label", name="get_label")
-async def get_label(request: LabelRequest):
+async def get_label(request: LabelRequest, db: Session = Depends(db_session.get_db)):
     url = f"{app_config.LABEL_API_URL}/HAWBLabel?shawb={request.shawb}&eLabelType={request.eLabelType}&szip={request.szip}"
 
     try:
@@ -28,6 +32,15 @@ async def get_label(request: LabelRequest):
 
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
+    # Log request and response for label endpoint
+    log_entry = MaerskLabelLog(
+        endpoint="/label",
+        request_data=request.dict(),
+        response_data=resp.json() if resp.status_code < 400 else resp.text,
+    )
+    db.add(log_entry)
+    db.commit()
+
     try:
         return resp.text
     except ValueError:
@@ -38,7 +51,7 @@ async def get_label(request: LabelRequest):
 
 
 @router.post("/bol", name="get_bol")
-async def get_bol(request: BOLRequest):
+async def get_bol(request: BOLRequest, db: Session = Depends(db_session.get_db)):
     url = app_config.LABEL_API_URL
 
     headers = {
@@ -66,6 +79,15 @@ async def get_bol(request: BOLRequest):
             detail = resp.text
 
         raise HTTPException(status_code=resp.status_code, detail=detail)
+
+    # Log request and response for bol endpoint
+    log_entry = MaerskLabelLog(
+        endpoint="/bol",
+        request_data=request.dict(),
+        response_data=resp.json() if resp.status_code < 400 else resp.text,
+    )
+    db.add(log_entry)
+    db.commit()
 
     try:
         return resp.text
