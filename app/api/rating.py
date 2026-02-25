@@ -1,18 +1,21 @@
 import requests
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
 
 from app.data_models.rating.line_item import LineItem
 from app.data_models.rating.rating import Rating
 from app.data_models.request_model import RatingRequest
 from app.services.config import app_config
 from app.services.utils import verify_api_key
+from app.services.db_session import db_session
+from app.data_models.db.rating_log import MaerskRatingLog
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 
 @router.post("/rating", name="rating")
-async def get_rating(request: RatingRequest):
+async def get_rating(request: RatingRequest, db: Session = Depends(db_session.get_db)):
     headers = {"api-key": app_config.MAERSK_API_KEY, "Content-Type": "application/json"}
 
     # Validate each line item
@@ -92,4 +95,15 @@ async def get_rating(request: RatingRequest):
         "lineitems": response_data["dsQuote"]["LineItems"],
         "quotes": filtered_quotes,
     }
+
+    # Log request and response
+    log_entry = MaerskRatingLog(
+        endpoint="/rating",
+        request_data=request.dict(),
+        response_data=result,
+        original_response=response_data,
+    )
+    db.add(log_entry)
+    db.commit()
+
     return result
