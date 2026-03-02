@@ -6,14 +6,16 @@ from app.data_models.db.maersk_logs import MaerskShipmentLog
 from app.data_models.shipment.request import ShipmentCreateRequest
 from app.services.config import app_config
 from app.services.db_session import db_session
-from app.services.utils import verify_api_key
+from app.services.utils import get_access_token, verify_api_key
 
 router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 
 @router.post("/shipment", name="shipment")
 async def create_shipment(
-    request: ShipmentCreateRequest, db: Session = Depends(db_session.get_db)
+    request: ShipmentCreateRequest, 
+    db: Session = Depends(db_session.get_db),
+    access_token: str = Depends(get_access_token),
 ):
     if not app_config.CLIENT_ID:
         raise RuntimeError("MAERSK_CONSUMER_KEY/CLIENT_ID is not set")
@@ -30,6 +32,7 @@ async def create_shipment(
     headers = {
         "Consumer-Key": app_config.CLIENT_ID,
         "Content-Type": "application/json",
+        "Authorization": f"Bearer {access_token}",
     }
 
     try:
