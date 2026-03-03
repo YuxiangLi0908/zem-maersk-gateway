@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
+from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel, field_serializer, field_validator
@@ -54,8 +55,18 @@ class ShipmentAddress(BaseModel):
     email: Optional[str] = None
 
 
+class AccessorialsEnum(str, Enum):
+    INSIDE = "Inside"
+    HOTEL = "Hotel"
+    LIFTGATE = "Liftgate"
+    CONVENTION = "Convention"
+    DEDICATED = "Dedicated"
+    DEBRIS_REMOVAL = "DebrisRemoval"
+
+
 class ShipmentParty(BaseModel):
     references: Optional[List[str]] = None
+    accessorials: Optional[List[AccessorialsEnum]] = None
     address: ShipmentAddress
 
 
