@@ -74,7 +74,7 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
     # Filter quotes for services BR and 72
     filtered_quotes = []
     for quote in response_data["dsQuote"]["Quote"]:
-        if quote.get("Service") in ["BR", "72"]:
+        if quote.get("Service") in ["BR", "BA", "72", "E0"]:
             quote_id = quote.get("Quote_Id")
 
             # Find corresponding breakdowns for this quote
