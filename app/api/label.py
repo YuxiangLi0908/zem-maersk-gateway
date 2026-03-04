@@ -58,10 +58,17 @@ async def get_bol(request: BOLRequest, db: Session = Depends(db_session.get_db))
         "Content-Type": "text/xml",
     }
 
-    payload = {
-        "shawb": request.shawb,
-        "szip": request.szip,
-    }
+    payload = f"""<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <soap:Body>
+                <HAWBDocument xmlns="http://tempuri.org/">
+                    <shawb>{request.shawb}</shawb>
+                    <szip>{request.szip}</szip>
+                </HAWBDocument>
+            </soap:Body>
+        </soap:Envelope>
+    """
 
     try:
         resp = requests.post(url, headers=headers, json=payload, timeout=30)
@@ -81,13 +88,13 @@ async def get_bol(request: BOLRequest, db: Session = Depends(db_session.get_db))
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
     # Log request and response for bol endpoint
-    log_entry = MaerskLabelLog(
-        endpoint="/bol",
-        request_data=request.dict(),
-        response_data=resp.json() if resp.status_code < 400 else resp.text,
-    )
-    db.add(log_entry)
-    db.commit()
+    # log_entry = MaerskLabelLog(
+    #     endpoint="/bol",
+    #     request_data=request.dict(),
+    #     response_data=resp.json() if resp.status_code < 400 else resp.text,
+    # )
+    # db.add(log_entry)
+    # db.commit()
 
     try:
         return resp.text
