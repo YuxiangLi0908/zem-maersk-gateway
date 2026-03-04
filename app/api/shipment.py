@@ -42,7 +42,16 @@ async def create_shipment(
             json=payload,
             timeout=30,
         )
+        resp.raise_for_status()
     except requests.exceptions.RequestException as e:
+        # Log request and original response in case of exceptions
+        log_entry = MaerskShipmentLog(
+            endpoint="/shipment",
+            request_data=payload,
+            response_data=resp.text if resp else str(e),
+        )
+        db.add(log_entry)
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Failed to connect to shipment service: {str(e)}",
@@ -55,6 +64,15 @@ async def create_shipment(
             detail = resp.json()
         except ValueError:
             detail = resp.text
+
+        # Log request and original response for non-success status codes
+        log_entry = MaerskShipmentLog(
+            endpoint="/shipment",
+            request_data=payload,
+            response_data=detail,
+        )
+        db.add(log_entry)
+        db.commit()
 
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
