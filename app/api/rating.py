@@ -47,8 +47,26 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
         )
         resp.raise_for_status()
     except requests.exceptions.HTTPError as e:
+        # Log request and original response in case of HTTP error
+        log_entry = MaerskRatingLog(
+            endpoint="/rating",
+            request_data=request.dict(),
+            response_data=None,
+            original_response=resp.text if resp else str(e),
+        )
+        db.add(log_entry)
+        db.commit()
         raise HTTPException(status_code=resp.status_code, detail=resp.text or str(e))
     except requests.exceptions.RequestException as e:
+        # Log request and original response in case of connection error
+        log_entry = MaerskRatingLog(
+            endpoint="/rating",
+            request_data=request.dict(),
+            response_data=None,
+            original_response=str(e),
+        )
+        db.add(log_entry)
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Failed to connect to rating service: {str(e)}",
@@ -57,6 +75,15 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
     try:
         response_data = resp.json()
     except ValueError:
+        # Log request and original response in case of HTTP error
+        log_entry = MaerskRatingLog(
+            endpoint="/rating",
+            request_data=request.dict(),
+            response_data=None,
+            original_response=resp.text if resp else str(e),
+        )
+        db.add(log_entry)
+        db.commit()
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Invalid JSON response from rating service",
@@ -64,6 +91,15 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
 
     # Check if the API returned an error in the response body
     if response_data.get("IsError", False):
+        # Log request and original response in case of HTTP error
+        log_entry = MaerskRatingLog(
+            endpoint="/rating",
+            request_data=request.dict(),
+            response_data=None,
+            original_response=resp.text if resp else str(e),
+        )
+        db.add(log_entry)
+        db.commit()
         error_message = response_data.get(
             "Message", "Unknown error from Maersk rating service"
         )
