@@ -78,10 +78,10 @@ class ShipmentLineItem(BaseModel):
     packaging: str
     pieces: int
     description: str
-    weight: Decimal
-    length: Decimal
-    width: Decimal
-    height: Decimal
+    weight: int
+    length: int
+    width: int
+    height: int
     weightUnit: str
     dimensionalUnit: str
 
