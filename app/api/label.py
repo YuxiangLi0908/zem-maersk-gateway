@@ -33,13 +33,13 @@ async def get_label(request: LabelRequest, db: Session = Depends(db_session.get_
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
     # Log request and response for label endpoint
-    log_entry = MaerskLabelLog(
-        endpoint="/label",
-        request_data=request.dict(),
-        response_data=resp.json() if resp.status_code < 400 else resp.text,
-    )
-    db.add(log_entry)
-    db.commit()
+    # log_entry = MaerskLabelLog(
+    #     endpoint="/label",
+    #     request_data=request.dict(),
+    #     response_data=resp.json() if resp.status_code < 400 else resp.text,
+    # )
+    # db.add(log_entry)
+    # db.commit()
 
     try:
         return resp.text
