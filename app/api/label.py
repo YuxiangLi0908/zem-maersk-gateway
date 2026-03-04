@@ -71,7 +71,7 @@ async def get_bol(request: BOLRequest, db: Session = Depends(db_session.get_db))
     """
 
     try:
-        resp = requests.post(url, headers=headers, json=payload, timeout=30)
+        resp = requests.post(url, headers=headers, data=payload, timeout=30)
     except requests.exceptions.RequestException as e:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
