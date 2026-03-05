@@ -30,6 +30,7 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
             detail=f"Invalid line item data: {e.errors()}",
         )
 
+    # Add optional fields to the data if they exist in the incoming request
     data = {
         "rating": Rating(
             shipper={"zipcode": request.origin_zip},
@@ -38,6 +39,9 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
             locationID=app_config.ADDRESS_ID,
             tariffHeaderID=app_config.TARIFF_HEADER_ID,
             shipDate=request.shipDate,
+            declaredValue=request.declaredValue if hasattr(request, "declaredValue") else None,
+            insuranceValue=request.insuranceValue if hasattr(request, "insuranceValue") else None,
+            debrisRemoval=request.debrisRemoval if hasattr(request, "debrisRemoval") else None,
         ).model_dump()
     }
 

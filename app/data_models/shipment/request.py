@@ -9,10 +9,10 @@ from pydantic import BaseModel, field_serializer, field_validator
 
 
 class ShipmentMonetary(BaseModel):
-    declaredValue: Decimal
-    isDeclaredValueInsurance: bool
-    collectOnDeliveryAmount: Decimal
-    commercialInvoiceValue: Decimal
+    declaredValue: Optional[Decimal] = None
+    isDeclaredValueInsurance: Optional[bool] = None
+    collectOnDeliveryAmount: Optional[Decimal] = None
+    commercialInvoiceValue: Optional[Decimal] = None
 
     @field_validator(
         "declaredValue",
