@@ -10,6 +10,8 @@ class AppConfig:
         self.MAERSK_API_KEY = os.getenv("MAERSK_API_KEY")
         self.CLIENT_ID = os.getenv("CLIENT_ID")
         self.CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+        self.MAERSK_USER_ID = os.getenv("MAERSK_USER_ID")
+        self.MAERSK_PASSWORD = os.getenv("MAERSK_PASSWORD")
         self.TARIFF_CODE = "ZEM"
         self.CONTROL_STATION = "GOP"
         self.PAY_TYPE = "ThirdParty"
@@ -26,6 +28,9 @@ class AppConfig:
         )
         self.LABEL_API_URL = (
             "https://pilotws.pilotdelivers.com/copilotforms_dev/wsforms.asmx"
+        )
+        self.TRACKING_API_URL = (
+            "https://wsi.pilotdelivers.com/test/pilotpartnertracking.asmx"
         )
         self.THIRD_PARTY = {
             "address": {

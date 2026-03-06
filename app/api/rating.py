@@ -34,14 +34,23 @@ async def get_rating(request: RatingRequest, db: Session = Depends(db_session.ge
     data = {
         "rating": Rating(
             shipper={"zipcode": request.origin_zip},
-            consignee={"zipcode": request.dest_zip, "liftgate": request.liftgate if hasattr(request, "liftgate") else None},
+            consignee={
+                "zipcode": request.dest_zip,
+                "liftgate": request.liftgate if hasattr(request, "liftgate") else None,
+            },
             lineItems=validated_line_items,
             locationID=app_config.ADDRESS_ID,
             tariffHeaderID=app_config.TARIFF_HEADER_ID,
             shipDate=request.shipDate,
-            declaredValue=request.declaredValue if hasattr(request, "declaredValue") else None,
-            insuranceValue=request.insuranceValue if hasattr(request, "insuranceValue") else None,
-            debrisRemoval=request.debrisRemoval if hasattr(request, "debrisRemoval") else None,
+            declaredValue=(
+                request.declaredValue if hasattr(request, "declaredValue") else None
+            ),
+            insuranceValue=(
+                request.insuranceValue if hasattr(request, "insuranceValue") else None
+            ),
+            debrisRemoval=(
+                request.debrisRemoval if hasattr(request, "debrisRemoval") else None
+            ),
         ).model_dump()
     }
 

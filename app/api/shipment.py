@@ -13,7 +13,7 @@ router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 @router.post("/shipment", name="shipment")
 async def create_shipment(
-    request: ShipmentCreateRequest, 
+    request: ShipmentCreateRequest,
     db: Session = Depends(db_session.get_db),
     access_token: str = Depends(get_access_token),
 ):
