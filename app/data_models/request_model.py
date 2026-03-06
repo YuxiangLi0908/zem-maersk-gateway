@@ -11,6 +11,7 @@ class RatingRequest(BaseModel):
     origin_zip: str
     dest_zip: str
     lineItems: List[LineItem]
+    liftgate: Optional[str] = None
     declaredValue: Optional[str] = None
     insuranceValue: Optional[str] = None
     debrisRemoval: Optional[str] = None
