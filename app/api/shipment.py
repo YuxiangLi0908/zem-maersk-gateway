@@ -29,6 +29,15 @@ async def create_shipment(
     payload.setdefault("controlStation", app_config.CONTROL_STATION)
     payload.setdefault("payType", app_config.PAY_TYPE)
 
+    if payload.serviceCode == "E0":
+        instruction = payload.get("specialInstructions", "")
+        instruction = (
+            "need delivery appointment - " + instruction
+            if instruction
+            else "need delivery appointment"
+        )
+        payload["specialInstructions"] = instruction
+
     headers = {
         "Consumer-Key": app_config.CLIENT_ID,
         "Content-Type": "application/json",
