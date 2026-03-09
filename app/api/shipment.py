@@ -29,7 +29,7 @@ async def create_shipment(
     payload.setdefault("controlStation", app_config.CONTROL_STATION)
     payload.setdefault("payType", app_config.PAY_TYPE)
 
-    if payload.serviceCode == "E0":
+    if payload.get("serviceCode", "") == "E0":
         instruction = payload.get("specialInstructions", "")
         instruction = (
             "need delivery appointment - " + instruction
