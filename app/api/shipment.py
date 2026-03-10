@@ -111,8 +111,8 @@ async def shipment_void(
         raise RuntimeError("MAERSK_API_KEY is not set")
 
     payload = {
-        "LocationId": app_config.LOCATION_ID,
-        "AddressId": app_config.ADDRESS_ID,
+        "LocationId": app_config.ADDRESS_ID,
+        "AddressId": app_config.LOCATION_ID,
         "ControlStation": control_station,
         "TariffHeaderID": app_config.TARIFF_HEADER_ID,
         "ProNumber": pro_number,
