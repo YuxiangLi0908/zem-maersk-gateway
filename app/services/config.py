@@ -15,6 +15,8 @@ class AppConfig:
         self.TARIFF_CODE = "ZEM"
         self.CONTROL_STATION = "GOP"
         self.PAY_TYPE = "ThirdParty"
+        self.SMARTY_AUTH_ID = os.getenv("SMARTY_AUTH_ID")
+        self.SMARTY_AUTH_TOKEN = os.getenv("SMARTY_AUTH_TOKEN")
 
         self.ACCESS_TOKEN_URL = "https://api.maersk.com/oauth2/access_token?grant_type=client_credentials&client_id={client_id}&client_secret={client_secret}".format(
             client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET
