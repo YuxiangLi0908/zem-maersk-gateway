@@ -1,3 +1,5 @@
+"""Public service health endpoint."""
+
 from fastapi import APIRouter
 
 from app.data_models.heartbeat import HeartbeatResult

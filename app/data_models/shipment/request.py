@@ -7,6 +7,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, field_serializer, field_validator
 
+from app.api.common.carriers import Carrier
+
 
 class ShipmentMonetary(BaseModel):
     declaredValue: Optional[Decimal] = None
@@ -116,6 +118,7 @@ class ShipmentLineItem(BaseModel):
 
 
 class ShipmentCreateRequest(BaseModel):
+    carrier: Carrier = Carrier.MAERSK
     tariffCode: Optional[str] = None
     locationId: Optional[int] = None
     controlStation: Optional[str] = None
@@ -153,11 +156,13 @@ class ShipmentCreateRequest(BaseModel):
 
 
 class LabelRequest(BaseModel):
+    carrier: Carrier = Carrier.MAERSK
     shawb: str
     eLabelType: str
     szip: str
 
 
 class BOLRequest(BaseModel):
+    carrier: Carrier = Carrier.MAERSK
     shawb: str
     szip: str
