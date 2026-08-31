@@ -2,11 +2,12 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from app.api.common.carriers import Carrier
 from app.data_models.rating.line_item import LineItem
-from app.data_models.rating.shipper_consignee import ShipperConsignee
 
 
 class RatingRequest(BaseModel):
+    carrier: Carrier = Carrier.MAERSK
     shipDate: str
     origin_zip: str
     dest_zip: str

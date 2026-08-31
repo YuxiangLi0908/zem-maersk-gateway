@@ -1,3 +1,5 @@
+"""Public address validation endpoint (not tied to a carrier)."""
+
 import requests
 from fastapi import APIRouter, Depends, HTTPException
 

@@ -11,7 +11,7 @@ from app.services.config import app_config
 from app.services.db_session import db_session
 from app.services.utils import verify_api_key
 
-router = APIRouter(dependencies=[Depends(verify_api_key)])
+router = APIRouter()
 
 
 @router.post("/rating", name="rating")

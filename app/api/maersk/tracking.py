@@ -7,7 +7,7 @@ from app.data_models.tracking.request import TrackingRequest
 from app.services.config import app_config
 from app.services.utils import verify_api_key
 
-router = APIRouter(dependencies=[Depends(verify_api_key)])
+router = APIRouter()
 
 
 @router.post("/tracking", name="tracking")

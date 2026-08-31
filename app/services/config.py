@@ -17,6 +17,10 @@ class AppConfig:
         self.PAY_TYPE = "ThirdParty"
         self.SMARTY_AUTH_ID = os.getenv("SMARTY_AUTH_ID")
         self.SMARTY_AUTH_TOKEN = os.getenv("SMARTY_AUTH_TOKEN")
+        self.KAKAS_API_KEY = os.getenv("KAKAS_API_KEY")
+        self.KAKAS_API_BASE_URL = os.getenv(
+            "KAKAS_API_BASE_URL", "https://test-api.savepallet.com/api"
+        ).rstrip("/")
 
         self.ACCESS_TOKEN_URL = "https://api.maersk.com/oauth2/access_token?grant_type=client_credentials&client_id={client_id}&client_secret={client_secret}".format(
             client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET
