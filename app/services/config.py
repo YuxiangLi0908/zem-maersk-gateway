@@ -17,7 +17,10 @@ class AppConfig:
         self.PAY_TYPE = "ThirdParty"
         self.SMARTY_AUTH_ID = os.getenv("SMARTY_AUTH_ID")
         self.SMARTY_AUTH_TOKEN = os.getenv("SMARTY_AUTH_TOKEN")
-        self.KAKAS_API_KEY = os.getenv("KAKAS_API_KEY")
+        # Temporary test credential; an environment variable takes precedence.
+        self.KAKAS_API_KEY = os.getenv(
+            "KAKAS_API_KEY", "f3723647-a985-4d1b-ae9f-24d851100000"
+        )
         self.KAKAS_API_BASE_URL = os.getenv(
             "KAKAS_API_BASE_URL", "https://test-api.savepallet.com/api"
         ).rstrip("/")
