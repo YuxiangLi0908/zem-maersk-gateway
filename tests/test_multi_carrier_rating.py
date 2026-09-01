@@ -108,6 +108,8 @@ class MultiCarrierRatingTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response["results"]["maersk"]["status"], "success")
         self.assertEqual(response["results"]["kakas"]["status"], "success")
         self.assertEqual(response["results"]["abf"]["status"], "not_configured")
+        self.assertEqual(response["freightClass"], "100")
+        self.assertEqual(response["freightClasses"], ["100"])
 
         maersk_request = maersk_mock.await_args.args[0]
         self.assertEqual(maersk_request.origin_zip, "07001")

@@ -29,6 +29,27 @@ def _carrier_from_payload(payload: dict) -> Carrier:
         raise HTTPException(status_code=422, detail="Unsupported carrier") from exc
 
 
+def _kakas_freight_classes(payload: dict) -> list[str]:
+    carrier_payloads = payload.get("carrierPayloads")
+    kakas_payload = (
+        carrier_payloads.get(Carrier.KAKAS.value, {})
+        if isinstance(carrier_payloads, dict)
+        else {}
+    )
+    commodity_list = kakas_payload.get("commodityList", [])
+    if not isinstance(commodity_list, list):
+        return []
+
+    freight_classes = []
+    for commodity in commodity_list:
+        if not isinstance(commodity, dict):
+            continue
+        freight_class = str(commodity.get("freightClass") or "").strip()
+        if freight_class and freight_class not in freight_classes:
+            freight_classes.append(freight_class)
+    return freight_classes
+
+
 async def _get_one_rating(carrier: Carrier, payload: dict, db: Session):
     carrier_payloads = payload.get("carrierPayloads")
     if isinstance(carrier_payloads, dict) and carrier.value in carrier_payloads:
@@ -78,7 +99,12 @@ async def get_rating(request: dict, db: Session = Depends(db_session.get_db)):
                 "error": f"{carrier.value} rating service failed unexpectedly",
             }
 
-    return {"carrier": Carrier.ALL, "results": results}
+    response = {"carrier": Carrier.ALL, "results": results}
+    freight_classes = _kakas_freight_classes(request)
+    if freight_classes:
+        response["freightClass"] = freight_classes[0]
+        response["freightClasses"] = freight_classes
+    return response
 
 
 @router.get("/rating", name="rating_result")
